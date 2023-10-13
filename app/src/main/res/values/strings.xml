@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NanasPOS</string>
+    <string name="title_activity_checkout">CheckoutActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_transaction">TransactionActivity</string>
+    <string name="title_activity_home">HomeActivity</string>
+</resources>
