@@ -61,6 +61,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.widget.EdgeEffectCompat
 import com.bangkit.nanaspos.UserPreference
+import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.component.TransactionHeaderListComponent
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
@@ -112,7 +113,7 @@ fun Transaction(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+            .padding(8.dp)
     ) {
         Text(
             text = "Transaksi Hari Ini",
@@ -132,20 +133,7 @@ fun Transaction(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                Text(
-                    text = viewModel.responseMessage,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                )
-                CircularProgressIndicator(
-                    strokeWidth = 10.dp,
-                    modifier = modifier
-                        .fillMaxSize(0.5f)
-                )
+                LoadingComponent()
             }
         }else{
             LazyColumn(

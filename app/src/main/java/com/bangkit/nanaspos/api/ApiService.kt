@@ -12,9 +12,9 @@ interface ApiService {
     ): Call<FinishTransactionResponse>
 
     @GET("api/menu/{divisi}")
-    fun fetchMenus(
+    suspend fun fetchMenus(
         @Path("divisi") divisi:Int
-    ): Call<MenuResponse>
+    ): Response<MenuResponse>
 
     @GET("api/transaksi/{divisi}")
     fun fetchTransactions(

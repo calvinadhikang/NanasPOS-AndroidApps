@@ -110,7 +110,7 @@ fun LoginScreen(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    LoadingComponent(modifier = Modifier.padding(end = 10.dp))
+                    LoadingComponent()
                 }
             }else{
                 ElevatedButton(

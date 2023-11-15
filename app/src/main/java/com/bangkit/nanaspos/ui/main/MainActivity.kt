@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.nanaspos.UserPreference
 import com.bangkit.nanaspos.ui.checkout.CheckoutActivity
+import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.component.MenuListComponent
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
@@ -92,20 +93,7 @@ fun AddScreen(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                Text(
-                    text = viewModel.responseMessage,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                )
-                CircularProgressIndicator(
-                    strokeWidth = 10.dp,
-                    modifier = modifier
-                        .fillMaxSize(0.5f)
-                )
+                LoadingComponent()
             }
         }else{
             LazyColumn(

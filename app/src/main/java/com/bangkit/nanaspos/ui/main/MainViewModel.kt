@@ -7,9 +7,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bangkit.nanaspos.api.ApiConfig
 import com.bangkit.nanaspos.api.MenuResponse
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,38 +24,32 @@ class MainViewModel: ViewModel() {
     var subTotal by mutableStateOf(0)
 
     fun getMenu(divisi: Int){
-        responseMessage = "Loading Menu..."
-        loading = true
+        viewModelScope.launch{
+            responseMessage = "Loading Menu..."
+            loading = true
+            val service = ApiConfig.getApiService()
+            val response = service.fetchMenus(divisi)
+            if (response.isSuccessful){
+                val result = response.body()!!
 
-        val client = ApiConfig.getApiService().fetchMenus(divisi)
-        client.enqueue(object: Callback<MenuResponse> {
-            override fun onResponse(call: Call<MenuResponse>, response: Response<MenuResponse>) {
-                if (response.isSuccessful){
-                    val body = response.body()!!
+                responseMessage = result.message
+                loading = false
 
-                    responseMessage = body.message
-                    loading = false
-
-                    val list = mutableStateListOf<Menu>()
-                    body.data.forEachIndexed { index, menuItemResponse ->
-                        list.add(Menu(
-                            id = menuItemResponse.id!!,
-                            qty = menuItemResponse.qty!!,
-                            subTotal = menuItemResponse.subtotal!!,
-                            harga = menuItemResponse.harga!!,
-                            nama = menuItemResponse.nama!!
-                        ))
-                    }
-                    Log.e("MENU_REFRESH", "MENU_REFRESH")
-                    menuList.value = list
-                    countSubtotal()
+                val list = mutableStateListOf<Menu>()
+                result.data.forEachIndexed { index, menuItemResponse ->
+                    list.add(Menu(
+                        id = menuItemResponse.id!!,
+                        qty = menuItemResponse.qty!!,
+                        subTotal = menuItemResponse.subtotal!!,
+                        harga = menuItemResponse.harga!!,
+                        nama = menuItemResponse.nama!!
+                    ))
                 }
-            }
 
-            override fun onFailure(call: Call<MenuResponse>, t: Throwable) {
+                menuList.value = list
+                countSubtotal()
             }
-
-        })
+        }
     }
 
     fun modifyQty(itemId: Int, oldQty: Int, oldHarga: Int, modifyValue: Int){
