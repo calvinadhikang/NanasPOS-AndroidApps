@@ -17,8 +17,7 @@ fun LoadingComponent(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircularProgressIndicator()
-        Spacer(modifier = modifier.padding(8.dp))
+        CircularProgressIndicator(modifier)
         Text(text = "Loading...")
     }
 }

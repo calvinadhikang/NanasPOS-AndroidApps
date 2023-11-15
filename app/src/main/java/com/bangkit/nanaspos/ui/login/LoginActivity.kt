@@ -4,29 +4,38 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -74,9 +83,6 @@ fun LoginScreen(
         }
     }
 
-    var username by rememberSaveable{ mutableStateOf("") }
-    var password by rememberSaveable{ mutableStateOf("") }
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
@@ -86,39 +92,40 @@ fun LoginScreen(
             modifier = modifier.padding(16.dp)
         ) {
             Text(
-                text = "Nanas Pos App",
-                fontWeight = FontWeight.Bold,
+                text = "Nanas Pos",
+                style = MaterialTheme.typography.headlineLarge,
                 textAlign = TextAlign.Center,
-                fontSize = 40.sp,
                 modifier = modifier
                     .fillMaxWidth()
             )
             Spacer(modifier = modifier.height(12.dp))
-            Text(text = "Username", fontWeight = FontWeight.Medium, fontSize = 20.sp)
-            OutlinedTextField(value = username, onValueChange = { username = it }, modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp))
-            Text(text = "Password", fontWeight = FontWeight.Medium, fontSize = 20.sp)
-            OutlinedTextField(value = password, onValueChange = { password = it }, modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp))
+
+            OutlinedTextField(label = { Text(text = "Username", style = MaterialTheme.typography.bodySmall) }, value = viewModel.username, onValueChange = { viewModel.username = it }, modifier = modifier
+                .fillMaxWidth())
+            OutlinedTextField(label = { Text(text = "Password", style = MaterialTheme.typography.bodySmall) }, value = viewModel.password, onValueChange = { viewModel.password = it }, modifier = modifier
+                .fillMaxWidth())
+            Spacer(modifier = modifier.height(12.dp))
             if (viewModel.isLoading){
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = modifier.fillMaxWidth()
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    LoadingComponent()
+                    LoadingComponent(modifier = Modifier.padding(end = 10.dp))
                 }
             }else{
-                Button(
+                ElevatedButton(
                     modifier = modifier
                         .fillMaxWidth()
-                        .height(60.dp)
                     ,
+                    shape = MaterialTheme.shapes.extraSmall,
+                    colors = ButtonDefaults.elevatedButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
                     onClick = {
-                        viewModel.login(username, password, context)
+                        viewModel.login(context)
                     }) {
-                    Text(text = "Login", fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+                    Text(text = "Login", style = MaterialTheme.typography.bodyLarge)
                 }
             }
         }

@@ -1,6 +1,7 @@
 package com.bangkit.nanaspos.api
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
@@ -36,7 +37,7 @@ interface ApiService {
     ): Call<TransactionResponse>
 
     @POST("api/login")
-    fun login(
+    suspend fun login(
         @Body request: LoginRequest
-    ): Call<LoginResponse>
+    ): Response<LoginResponse>
 }
