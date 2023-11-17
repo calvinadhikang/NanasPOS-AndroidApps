@@ -32,9 +32,9 @@ interface ApiService {
     ): Call<FinishTransactionResponse>
 
     @POST("api/transaksi")
-    fun createTransaction(
+    suspend fun createTransaction(
         @Body request: TransactionRequest
-    ): Call<TransactionResponse>
+    ): Response<TransactionResponse>
 
     @POST("api/login")
     suspend fun login(

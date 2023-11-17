@@ -1,6 +1,7 @@
 package com.bangkit.nanaspos.ui.transaction_detail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Print
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -48,6 +50,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.nanaspos.ui.component.CheckoutListComponent
+import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.component.badge
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
@@ -61,7 +64,6 @@ fun TransactionDetail(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-
     val detailList by viewModel.detailList.collectAsState()
 
     LaunchedEffect(key1 = Unit){
@@ -88,7 +90,7 @@ fun TransactionDetail(
                     }
             )
             Text(
-                text = viewModel.htrans.customer,
+                text = "Detail Transaksi",
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.Bold,
                 fontSize = 28.sp,
@@ -97,14 +99,8 @@ fun TransactionDetail(
                     .align(Alignment.Center)
             )
         }
-        Text(
-            text = viewModel.responseMessage,
-            textAlign = TextAlign.Center,
-            color = Color.DarkGray,
-            fontSize = 16.sp,
-            modifier = Modifier
-                .fillMaxWidth()
-        )
+        Divider()
+
         if (viewModel.loading){
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -113,27 +109,51 @@ fun TransactionDetail(
                     .fillMaxWidth()
                     .weight(1f)
             ) {
-                Text(
-                    text = viewModel.responseMessage,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp)
-                )
-                CircularProgressIndicator(
-                    strokeWidth = 10.dp,
-                    modifier = modifier
-                        .fillMaxSize(0.5f)
-                )
+                LoadingComponent()
             }
-        }else {
+        } else {
             LazyColumn(
                 contentPadding = PaddingValues(4.dp, bottom = 40.dp),
                 modifier = modifier
                     .padding(bottom = 16.dp)
             ) {
+                item {
+                    badge(status = viewModel.htrans.status)
+                }
+                item {
+                    Text(
+                        text = "Detail Transaksi",
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(bottom = 8.dp, top = 20.dp)
+                    )
+                    Column(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(MaterialTheme.colorScheme.secondary)
+                            .padding(16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Row(){
+                            Text(text="Status Pesanan", modifier = Modifier.weight(1F))
+                            badge(status = viewModel.htrans.status,)
+                        }
+                        Row(){
+                            Text(text="Customer", modifier = Modifier.weight(1F))
+                            Text(text=viewModel.htrans.customer)
+                        }
+                        Row(){
+                            Text(text="Grand Total", modifier = Modifier.weight(1F))
+                            Text(text=viewModel.htrans.grandtotal.toString())
+                        }
+                    }
+                }
+                item{
+                    Text(
+                        text = "Detail Pesanan",
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(bottom = 8.dp, top = 20.dp)
+                    )
+                }
                 items(detailList) { trans ->
                     CheckoutListComponent(
                         nama = trans.nama!!,
@@ -182,9 +202,7 @@ fun TransactionDetail(
                             modifier = modifier.padding(top = 8.dp),
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            badge(
-                                status = viewModel.htrans.status,
-                            )
+
                             Spacer(
                                 modifier = modifier.weight(1F)
                             )
