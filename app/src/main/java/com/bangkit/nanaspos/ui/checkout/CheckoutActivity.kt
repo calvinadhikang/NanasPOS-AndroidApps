@@ -28,6 +28,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ButtonColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
@@ -107,11 +108,12 @@ fun CheckoutScreen(
 ) {
     val context = LocalContext.current
     val menuList by viewModel.menuList.collectAsState()
+    var isEdit by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(key1 = Unit){
         viewModel.getCheckoutList()
     }
 
-    var customer by rememberSaveable{ mutableStateOf("") }
     var hasDiskon by rememberSaveable { mutableStateOf(false) }
     var hasOngkir by rememberSaveable { mutableStateOf(false) }
 
@@ -146,19 +148,26 @@ fun CheckoutScreen(
 
         }
         Spacer(modifier = modifier.padding(16.dp))
+        Text(
+            text = "Detail Pesanan",
+            style = MaterialTheme.typography.labelMedium,
+            modifier = modifier.padding(bottom = 8.dp)
+        )
         menuList.forEachIndexed { index, menu ->
             CheckoutListComponent(
                 nama = menu.nama,
                 harga = menu.harga,
                 qty = menu.qty,
-                subTotal = menu.subTotal
+                subTotal = menu.subTotal,
+                isEdit = isEdit
             )
         }
+        EditButton(isEdit = isEdit, onClick = { isEdit = !isEdit })
+
         Spacer(modifier = modifier.padding(20.dp))
         Text(
-            text = "Detail Pesanan",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
+            text = "Detail Customer",
+            style = MaterialTheme.typography.labelMedium,
             modifier = modifier.padding(bottom = 8.dp)
         )
         Column(
@@ -168,8 +177,10 @@ fun CheckoutScreen(
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            Text(text = "Nama Customer", fontWeight = FontWeight.SemiBold)
             OutlinedTextField(
+                label = {
+                    Text(text = "Nama Customer", style = MaterialTheme.typography.bodySmall)
+                },
                 leadingIcon = {
                     Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "")
                 },
@@ -179,181 +190,20 @@ fun CheckoutScreen(
                     unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSecondary,
                     focusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
                     focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
+                    focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
                     textColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 singleLine = true,
-                value = customer,
-                onValueChange = { customer = it },
+                value = viewModel.customer,
+                onValueChange = { viewModel.customer = it },
                 modifier = modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp, top = 4.dp)
             )
         }
-        Column(
-            modifier = modifier
-                .padding(top = 16.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
-                .padding(start = 16.dp, end = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(imageVector = Icons.Default.Discount, contentDescription = "")
-                Text(text = "Dapat Diskon ?", fontWeight = FontWeight.SemiBold, modifier = modifier.weight(1F))
-                Switch(
-                    checked = hasDiskon,
-                    onCheckedChange = {
-                        hasDiskon = it
-                        viewModel.diskon = 0
-                        viewModel.countDiscount()
-                    }
-                )
-            }
-            if (hasDiskon){
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = modifier.padding(bottom = 16.dp)
-                ) {
-                    TextField(
-                        value = viewModel.diskon.toString(),
-                        onValueChange = {
-                            if (it != ""){
-                                var toInt = it.toInt()
-                                if (toInt > 100){
-                                    toInt = 100
-                                }
-                                viewModel.diskon = toInt
-                            }else{
-                                viewModel.diskon = 0
-                            }
-                            viewModel.countDiscount()
-                        },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                        modifier = modifier
-                            .fillMaxWidth(0.2F)
-                    )
-                    Text(text = "%", fontSize = 15.sp)
-                    Text(
-                        text = "Total Diskon : Rp ${String.format("%,d", viewModel.diskonTotal)}",
-                        textAlign = TextAlign.End,
-                        modifier = modifier.weight(1f)
-                    )
-                }
-            }
-        }
-        Column(
-            modifier = modifier
-                .padding(top = 16.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
-                .padding(start = 16.dp, end = 16.dp)
-                .fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(imageVector = Icons.Default.DeliveryDining, contentDescription = "")
-                Text(text = "Pesanan Di Kirim ?", fontWeight = FontWeight.SemiBold, modifier = modifier.weight(1F))
-                Switch(
-                    checked = hasOngkir,
-                    onCheckedChange = {
-                        hasOngkir = it
-                        viewModel.ongkir = 0
-                        viewModel.alamat = ""
-                    }
-                )
-            }
-            if (hasOngkir){
-                Column(
-                    modifier = modifier.padding(bottom = 16.dp)
-                ) {
-                    Text(text = "Harga Ongkir", modifier = modifier.padding(bottom = 4.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        TextField(
-                            value = viewModel.ongkir.toString(),
-                            leadingIcon = {
-                                Icon(imageVector = Icons.Default.AttachMoney, contentDescription = "")
-                            },
-                            onValueChange = {
-                                if (it != ""){
-                                    viewModel.ongkir = it.toInt()
-                                }else{
-                                    viewModel.ongkir = 0
-                                }
-                                viewModel.countDiscount()
-                            },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                            modifier = modifier.fillMaxWidth()
-                        )
-                    }
-                    Text(text = "Alamat Pengiriman", modifier = modifier.padding(bottom = 4.dp))
-                    OutlinedTextField(
-                        value = viewModel.alamat,
-                        onValueChange = {viewModel.alamat = it},
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-                            unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
-                            unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSecondary,
-                            focusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
-                            focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-                            textColor = MaterialTheme.colorScheme.onSecondary
-                        ),
-                        maxLines = 3,
-                        modifier = modifier.fillMaxWidth()
-                    )
-                }
-            }
-        }
-        Spacer(modifier = modifier.padding(20.dp))
-        Text(
-            text = "Detail Biaya",
-            fontSize = 25.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = modifier.padding(bottom = 8.dp)
-        )
-        Column(
-            modifier = modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
-                .padding(16.dp)
-                .fillMaxWidth()
-        ) {
-            if (viewModel.diskon > 0 || viewModel.ongkir > 0){
-                Row() {
-                    Icon(imageVector = Icons.Default.AttachMoney, contentDescription = "")
-                    Text(text = "Total Pesanan: ")
-                    Text(text = "Rp ${String.format("%,d", viewModel.grandTotal)}", textAlign = TextAlign.End, modifier = modifier.weight(1f))
-                }
-            }
-            if (viewModel.diskon > 0){
-                Row(){
-                    Icon(imageVector = Icons.Default.Discount, contentDescription = "")
-                    Text(text = "Total Diskon: ${viewModel.diskon}%")
-                    Text(text = "-Rp ${String.format("%,d", viewModel.diskonTotal)}", textAlign = TextAlign.End, modifier = modifier.weight(1f), color = Color.Red)
-                }
-            }
 
-            if (hasDiskon || hasOngkir){
-                Spacer(modifier = modifier.padding(8.dp))
-            }
-            Text(text = "Grand Total: ")
-            Text(
-                text = "Rp ${String.format("%,d", viewModel.finalTotal)}",
-                fontSize = 25.sp,
-                fontWeight = FontWeight.Bold,
-            )
-        }
-        Spacer(modifier = modifier.padding(16.dp))
+        DetailBiayaComponent(viewModel = viewModel)
+        
         Button(
             colors = ButtonDefaults.buttonColors(
                 MaterialTheme.colorScheme.primary
@@ -361,14 +211,14 @@ fun CheckoutScreen(
             shape = RoundedCornerShape(8.dp),
             elevation = ButtonDefaults.buttonElevation(3.dp),
             modifier = modifier
-                .padding(bottom = 16.dp)
+                .padding(bottom = 16.dp, top = 16.dp)
                 .fillMaxWidth()
                 .height(50.dp),
             onClick = {
-                if (customer == ""){
+                if (viewModel.customer == ""){
                     Toast.makeText(context, "Nama Customer Harus Terisi", Toast.LENGTH_SHORT).show()
                 }else{
-                    viewModel.createTransaction(context, customer)
+                    viewModel.createTransaction(context)
                 }
             }
         ) {
@@ -378,6 +228,58 @@ fun CheckoutScreen(
                 Text(text = "Buat Pesanan", modifier = modifier.padding(end = 4.dp))
                 Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "")
             }
+        }
+    }
+}
+
+@Composable
+fun EditButton(
+    isEdit: Boolean,
+    onClick: () -> Unit
+){
+    val btnText = if (isEdit) { "Finish !" } else { "Edit" }
+    val btnColor = if (isEdit) { MaterialTheme.colorScheme.primary } else { Color.Green }
+    Button(
+        onClick = onClick,
+        shape = MaterialTheme.shapes.extraSmall,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = btnColor,
+        )
+    ) {
+        Text(text = btnText)
+    }
+}
+
+@Composable
+fun DetailBiayaComponent(
+    viewModel: CheckoutViewModel
+){
+    val total by viewModel.total.collectAsState()
+    val pajak_value by viewModel.pajak_value.collectAsState()
+
+    Text(
+        text = "Detail Biaya",
+        style = MaterialTheme.typography.labelMedium,
+        modifier = Modifier.padding(bottom = 8.dp, top = 20.dp)
+    )
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(MaterialTheme.colorScheme.secondary)
+            .padding(16.dp)
+            .fillMaxWidth()
+    ) {
+        Row(){
+            Text(text="Pajak (10%)", modifier = Modifier.weight(1F))
+            Text(text="Rp ${String.format("%, d", pajak_value)}")
+        }
+        Row(){
+            Text(text="Total", modifier = Modifier.weight(1F))
+            Text(text="Rp ${String.format("%, d", total)}")
+        }
+        Row(){
+            Text(text="Grand Total", modifier = Modifier.weight(1F))
+            Text(text = "Rp ${String.format("%,d", total + pajak_value)}", fontWeight = FontWeight.Bold)
         }
     }
 }

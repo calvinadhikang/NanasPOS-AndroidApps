@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,17 +56,17 @@ fun MenuListComponent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            FilledIconButton(
+            IconButton(
                 onClick = {
                     onMinus(id)
                 }
-            ) {Icon(imageVector = Icons.Default.Remove, contentDescription = "") }
+            ) {Icon(imageVector = Icons.Default.RemoveCircle, contentDescription = "") }
             Text(text = qty.toString(), fontSize = 28.sp)
-            FilledIconButton(
+            IconButton(
                 onClick = {
                     onAdd(id)
                 }
-            ) {Icon(imageVector = Icons.Default.Add, contentDescription = "")}
+            ) {Icon(imageVector = Icons.Default.AddCircle, contentDescription = "")}
         }
     }
 }

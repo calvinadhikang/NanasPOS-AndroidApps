@@ -4,8 +4,11 @@ import com.google.gson.annotations.SerializedName
 
 data class TransactionRequest(
 
-	@field:SerializedName("grandTotal")
-	val grandTotal: Int? = null,
+	@field:SerializedName("total")
+	val total: Int? = null,
+
+	@field:SerializedName("tax")
+	val tax: Int? = null,
 
 	@field:SerializedName("diskon")
 	val diskon: Int? = null,

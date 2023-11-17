@@ -3,6 +3,7 @@ package com.bangkit.nanaspos.ui.checkout
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -24,35 +25,41 @@ import retrofit2.Response
 class CheckoutViewModel: ViewModel() {
 
     var menuList: MutableStateFlow<List<Menu>> = MutableStateFlow(mutableStateListOf())
-    var grandTotal by mutableStateOf(0)
+    var total = MutableStateFlow(0)
+    var pajak_value = MutableStateFlow(0)
     var diskon by mutableStateOf(0)
+
     var finalTotal by mutableStateOf(0)
     var diskonTotal by mutableStateOf(0)
+    var customer by mutableStateOf("")
     var isLoading by mutableStateOf(false)
-    var alamat by mutableStateOf("")
-    var ongkir by mutableStateOf(0)
+
+    var pajak = 10
 
     fun getCheckoutList(){
         val mainList = MainViewModel.checkOutList
-        menuList = mainList
-        countSubtotal()
-        countDiscount()
+        menuList.value = mainList.value
+
+        countTotal()
+        countPPN()
     }
 
-    private fun countSubtotal(){
-        var subtotal = 0
-        menuList.value.forEachIndexed { index, menu ->
-            subtotal += menu.subTotal
-        }
-        this.grandTotal = subtotal
+    private fun countPPN() {
+        pajak_value.value = total.value / 100 * pajak
+    }
+
+    private fun countTotal() {
+        var temp = 0
+        menuList.value.map { menu -> temp += menu.subTotal }
+        total.value = temp
     }
 
     fun countDiscount(){
-        diskonTotal = (grandTotal / 100) * (diskon)
-        finalTotal = (grandTotal / 100) * (100-diskon)
+        diskonTotal = (total.value / 100) * (diskon)
+        finalTotal = (total.value / 100) * (100-diskon)
     }
 
-    fun createTransaction(context: Context, customer: String){
+    fun createTransaction(context: Context){
         isLoading = true
 
         val itemsList = mutableListOf<TransactionItem>()
@@ -67,11 +74,10 @@ class CheckoutViewModel: ViewModel() {
         }
 
         val request = TransactionRequest(
-            grandTotal = finalTotal,
             customer = customer,
             divisi = 1,
             userId = 1,
-            diskon = grandTotal - finalTotal ,
+            diskon = diskonTotal ,
             items = itemsList
         )
 

@@ -33,6 +33,6 @@ val Typography = Typography(
     labelMedium = TextStyle(
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium
-    )
+    ),
 )
 
