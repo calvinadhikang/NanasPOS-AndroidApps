@@ -23,6 +23,8 @@ val Typography = Typography(
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
+
+    //Untuk EditText Label
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Medium,
@@ -30,9 +32,23 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),
+
+    //Untuk Section Header
     labelMedium = TextStyle(
         fontSize = 20.sp,
         fontWeight = FontWeight.Medium
     ),
+
+    //Highlight Text pada Content + Ukuran lebih besar
+    bodyMedium = TextStyle(
+        fontSize = 18.sp,
+        fontWeight = FontWeight.SemiBold
+    ),
+
+    //Highlight Text pada Content
+    bodySmall = TextStyle(
+        fontSize = 16.sp,
+        fontWeight = FontWeight.SemiBold
+    )
 )
 

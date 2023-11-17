@@ -23,6 +23,7 @@ import retrofit2.Response
 
 class TransactionDetailViewModel: ViewModel() {
 
+    var isEdit = MutableStateFlow(false)
     var printAble by mutableStateOf(false)
     var loading by mutableStateOf(false)
 
@@ -38,7 +39,10 @@ class TransactionDetailViewModel: ViewModel() {
             user_id = -1,
             status = -1,
             diskon = -1,
-            dtrans = emptyList()
+            dtrans = emptyList(),
+            tax = -1,
+            tax_value = -1,
+            total = -1,
         )
     )
 
@@ -48,6 +52,10 @@ class TransactionDetailViewModel: ViewModel() {
 
     fun countKembalian(){
         kembalian = uang - htrans.grandtotal
+    }
+
+    fun toggleEdit(){
+        isEdit.value = !isEdit.value
     }
 
     fun getTransactionDetail(id: Int){
@@ -101,11 +109,12 @@ class TransactionDetailViewModel: ViewModel() {
     }
 
     fun printBluetooth(){
+        var nama = if (htrans.divisi == 1) { "BabikuGenyol" } else { "BaliLais" }
+
         var details = ""
         detailList.value.forEachIndexed { index, menuItemResponse ->
             details += "[L]<b>${menuItemResponse.nama}</b>[R]Rp. ${String.format("%,d", menuItemResponse.subtotal)}\n"
             details += "[L]${menuItemResponse.qty} x Rp. ${String.format("%,d", menuItemResponse.harga)}\n"
-            details += "[L]\n"
         }
 
         var discount = ""
@@ -113,10 +122,15 @@ class TransactionDetailViewModel: ViewModel() {
             discount = "[R]TOTAL DISC  :[R]Rp. ${String.format("%,d", htrans.diskon)}\n" + "[R]GRAND TOTAL :[R]Rp. ${String.format("%,d", htrans.grandtotal)}\n"
         }
 
+        var tax = ""
+        if (htrans.tax > 0){
+            tax = "[L]Tax ${htrans.tax}% : [R]Rp. ${String.format("%,d", htrans.tax_value)}\n"
+        }
+
         val printer = EscPosPrinter(BluetoothPrintersConnections.selectFirstPaired(), 203, 48f, 32)
         printer
             .printFormattedText(
-            "[C]<u><font size='big'>Babiku Genyol</font></u>\n" +
+            "[C]<u><font size='big'>$nama</font></u>\n" +
                 "[C]WA: 081-217-393-280\n" +
                 "[L]<b>Customer :${htrans.customer}</b>\n" +
                 "[L]\n" +
@@ -124,8 +138,9 @@ class TransactionDetailViewModel: ViewModel() {
                 "[L]\n" +
                 "${details}\n" +
                 "[C]--------------------------------\n" +
-                "[R]TOTAL PRICE :[R]Rp. ${String.format("%,d", htrans.grandtotal + htrans.diskon)}\n" +
-                "${discount}}"
+                "[L]TOTAL HARGA :[R]Rp. ${String.format("%,d", htrans.total)}\n" +
+                "${tax}" +
+                "[L]GRAND TOTAL :[R] Rp. ${String.format("%,d", htrans.grandtotal)}"
             )
     }
 }

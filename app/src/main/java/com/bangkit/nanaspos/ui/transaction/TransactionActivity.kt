@@ -175,43 +175,8 @@ fun Transaction(
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                text = "Total Pendapatan Hari Ini",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Light,
-            )
+            Text(text = "Total Pendapatan Hari Ini")
         }
-    }
-}
-
-@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun SwipeBackground(
-    dismissState: DismissState
-){
-    val direction = dismissState.dismissDirection ?: return
-
-    val color by animateColorAsState(
-        when(dismissState.targetValue){
-            DismissValue.Default -> Color.Transparent
-            DismissValue.DismissedToStart -> Color.Red
-            DismissValue.DismissedToEnd -> Color.Transparent
-        }
-    )
-
-    val scale by animateFloatAsState(
-        if (dismissState.targetValue == DismissValue.Default) 0.75f else 1f
-    )
-
-    Box(
-        contentAlignment = Alignment.CenterEnd,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 15.dp)
-            .background(color)
-            .padding(horizontal = 20.dp)
-    ) {
-        Icon(imageVector = Icons.Default.Delete, contentDescription = "")
     }
 }
 

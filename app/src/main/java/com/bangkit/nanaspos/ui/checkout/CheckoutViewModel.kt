@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.nanaspos.UserPreference
 import com.bangkit.nanaspos.api.ApiConfig
 import com.bangkit.nanaspos.api.TransactionItem
 import com.bangkit.nanaspos.api.TransactionRequest
@@ -30,12 +31,10 @@ class CheckoutViewModel: ViewModel() {
     var total = MutableStateFlow(0)
     var pajak_value = MutableStateFlow(0)
     var diskon by mutableStateOf(0)
-
     var finalTotal by mutableStateOf(0)
     var diskonTotal by mutableStateOf(0)
     var customer by mutableStateOf("")
     var isLoading by mutableStateOf(false)
-
     var pajak = 10
 
     fun getCheckoutList(){
@@ -63,6 +62,7 @@ class CheckoutViewModel: ViewModel() {
 
     fun createTransaction(context: Context){
         viewModelScope.launch {
+            val user = UserPreference(context).getUser()
             isLoading = true
 
             val itemsList = mutableListOf<TransactionItem>()
@@ -80,8 +80,8 @@ class CheckoutViewModel: ViewModel() {
                 total = total.value,
                 tax = pajak,
                 customer = customer,
-                divisi = 1,
-                userId = 1,
+                divisi = user.divisi,
+                userId = user.id,
                 diskon = diskon,
                 items = itemsList
             )

@@ -53,24 +53,9 @@ fun CheckoutListComponent(
             Column(
                 modifier = modifier.weight(1F)
             ) {
-                Text(
-                    text = nama,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = modifier
-                )
-                Text(
-                    text = "Rp ${String.format("%,d", harga)}",
-                    fontSize = 12.sp,
-                    modifier = modifier
-                        .padding(bottom = 8.dp)
-                )
-                Text(
-                    text = "Subtotal: Rp ${String.format("%,d", subTotal)}",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = modifier
-                )
+                Text(text = nama,style = MaterialTheme.typography.bodySmall)
+                Text(text = "Rp ${String.format("%,d", harga)}")
+                Text(text = "Subtotal: Rp ${String.format("%,d", subTotal)}")
             }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -82,7 +67,7 @@ fun CheckoutListComponent(
                         Icon(imageVector = Icons.Default.RemoveCircle, contentDescription = "")
                     }
                 }
-                Text(text = "$qty x", fontSize = 28.sp)
+                Text(text = "$qty", style = MaterialTheme.typography.bodyMedium)
                 if (isEdit){
                     IconButton(onClick = {  }) {
                         Icon(imageVector = Icons.Default.AddCircle, contentDescription = "")

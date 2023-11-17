@@ -51,6 +51,15 @@ data class TransactionItemResponse(
     @field:SerializedName("grandtotal")
     val grandtotal: Int,
 
+    @field:SerializedName("tax")
+    val tax: Int,
+
+    @field:SerializedName("tax_value")
+    val tax_value: Int,
+
+    @field:SerializedName("total")
+    val total: Int,
+
     @field:SerializedName("diskon")
     val diskon: Int,
 

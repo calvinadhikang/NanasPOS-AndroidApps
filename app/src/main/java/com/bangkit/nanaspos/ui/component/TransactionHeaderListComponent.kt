@@ -60,46 +60,21 @@ fun TransactionHeaderListComponent(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                Text(
-                    text = customer,
-                    fontSize = 28.sp,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(text = "Rp ${String.format("%,d", grandtotal)}", fontSize = 18.sp)
-                badge(status = status)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(text = customer, style = MaterialTheme.typography.bodyMedium)
+                    CreateBadge(status = status)
+                }
+                Text(text = "Rp ${String.format("%,d", grandtotal)}")
             }
             IconButton(onClick = {
                 onDeleteClick()
             }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "", modifier = Modifier.size(40.dp), tint = Color.Red)
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "", modifier = Modifier.size(30.dp), tint = Color.Red)
             }
         }
-    }
-}
-
-@Composable
-fun badge(
-    status: Int,
-    modifier: Modifier = Modifier
-){
-    if (status == 0){
-        Text(
-            text = "Belum Lunas",
-            color = Color.White,
-            modifier = modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color.Red)
-                .padding(6.dp)
-        )
-    }else{
-        Text(
-            text = "Lunas",
-            color = Color.Black,
-            modifier = modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(Color.Green)
-                .padding(6.dp)
-        )
     }
 }
 

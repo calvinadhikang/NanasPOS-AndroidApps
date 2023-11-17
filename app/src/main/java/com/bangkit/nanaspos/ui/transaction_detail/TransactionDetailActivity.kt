@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Print
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,8 +51,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.nanaspos.ui.component.CheckoutListComponent
+import com.bangkit.nanaspos.ui.component.CreateBadge
 import com.bangkit.nanaspos.ui.component.LoadingComponent
-import com.bangkit.nanaspos.ui.component.badge
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
 
@@ -65,6 +66,7 @@ fun TransactionDetail(
 ) {
     val context = LocalContext.current
     val detailList by viewModel.detailList.collectAsState()
+    val isEdit by viewModel.isEdit.collectAsState()
 
     LaunchedEffect(key1 = Unit){
         viewModel.getTransactionDetail(key)
@@ -115,11 +117,8 @@ fun TransactionDetail(
             LazyColumn(
                 contentPadding = PaddingValues(4.dp, bottom = 40.dp),
                 modifier = modifier
-                    .padding(bottom = 16.dp)
+                    .padding(bottom = 4.dp)
             ) {
-                item {
-                    badge(status = viewModel.htrans.status)
-                }
                 item {
                     Text(
                         text = "Detail Transaksi",
@@ -135,15 +134,24 @@ fun TransactionDetail(
                     ) {
                         Row(){
                             Text(text="Status Pesanan", modifier = Modifier.weight(1F))
-                            badge(status = viewModel.htrans.status,)
+                            CreateBadge(status = viewModel.htrans.status,)
                         }
                         Row(){
                             Text(text="Customer", modifier = Modifier.weight(1F))
                             Text(text=viewModel.htrans.customer)
                         }
+                        Divider(Modifier.padding(vertical = 4.dp))
                         Row(){
-                            Text(text="Grand Total", modifier = Modifier.weight(1F))
-                            Text(text=viewModel.htrans.grandtotal.toString())
+                            Text(text="Tax (${viewModel.htrans.tax}%)", modifier = Modifier.weight(1F))
+                            Text(text="Rp ${String.format("%,d",viewModel.htrans.tax_value)}")
+                        }
+                        Row(){
+                            Text(text="Total", modifier = Modifier.weight(1F))
+                            Text(text="Rp ${String.format("%,d",viewModel.htrans.total)}")
+                        }
+                        Row(){
+                            Text(text="Grand Total", modifier = Modifier.weight(1F), style = MaterialTheme.typography.bodyMedium)
+                            Text(text="Rp ${String.format("%,d",viewModel.htrans.grandtotal)}", style = MaterialTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -156,6 +164,7 @@ fun TransactionDetail(
                 }
                 items(detailList) { trans ->
                     CheckoutListComponent(
+                        isEdit = isEdit,
                         nama = trans.nama!!,
                         harga = trans.harga!!,
                         qty = trans.qty!!,
@@ -163,89 +172,108 @@ fun TransactionDetail(
                     )
                 }
                 item {
-                    Column(
-                        modifier = modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .shadow(4.dp)
-                            .background(Color.LightGray)
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                    ) {
-                        //Hitung Kembalian
-                        Text(text = "Hitung Kembalian")
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                    var btnColor = if (isEdit) { MaterialTheme.colorScheme.primary } else { Color.Green }
+                    var btnText = if (isEdit) { "Simpan" } else { "Edit" }
+                    Button(
+                        content = { Text(btnText) },
+                        onClick = { viewModel.toggleEdit() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = btnColor
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                item {
+                    if(!isEdit){
+                        Text(
+                            text = "Selesaikan Pesanan",
+                            style = MaterialTheme.typography.labelMedium,
+                            modifier = Modifier.padding(bottom = 8.dp, top = 20.dp)
+                        )
+                        Column(
+                            modifier = modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .shadow(4.dp)
+                                .background(Color.LightGray)
+                                .padding(8.dp)
+                                .fillMaxWidth()
                         ) {
-                            TextField(
-                                value = viewModel.uang.toString(),
-                                onValueChange = {
-                                    if (it != "") {
-                                        viewModel.uang = it.toInt()
-                                    } else {
-                                        viewModel.uang = 0
-                                    }
-                                    viewModel.countKembalian()
-                                },
-                                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                                modifier = modifier
-                                    .weight(0.5F)
-                                    .padding(end = 4.dp)
-                            )
-                            Text(
-                                text = "Kembali Rp : ${String.format("%,d", viewModel.kembalian)}",
-                                fontSize = 20.sp,
-                                modifier = modifier.weight(1F)
-                            )
-                        }
-                        Spacer(modifier = modifier.padding(8.dp))
-                        Row(
-                            modifier = modifier.padding(top = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
+                            //Hitung Kembalian
+                            Text(text = "Hitung Kembalian")
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextField(
+                                    value = viewModel.uang.toString(),
+                                    onValueChange = {
+                                        if (it != "") {
+                                            viewModel.uang = it.toInt()
+                                        } else {
+                                            viewModel.uang = 0
+                                        }
+                                        viewModel.countKembalian()
+                                    },
+                                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                    modifier = modifier
+                                        .weight(0.5F)
+                                        .padding(end = 4.dp)
+                                )
+                                Text(
+                                    text = "Kembali Rp : ${String.format("%,d", viewModel.kembalian)}",
+                                    fontSize = 20.sp,
+                                    modifier = modifier.weight(1F)
+                                )
+                            }
+                            Spacer(modifier = modifier.padding(8.dp))
+                            Row(
+                                modifier = modifier.padding(top = 8.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
 
-                            Spacer(
-                                modifier = modifier.weight(1F)
-                            )
-                            if (viewModel.htrans.status == 0) {
-                                Button(
-                                    onClick = {
-                                        //Finish Pembayaran
-                                        viewModel.finishTransaction(key, context)
+                                Spacer(
+                                    modifier = modifier.weight(1F)
+                                )
+                                if (viewModel.htrans.status == 0) {
+                                    Button(
+                                        onClick = {
+                                            //Finish Pembayaran
+                                            viewModel.finishTransaction(key, context)
+                                        }
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CheckCircle,
+                                            contentDescription = ""
+                                        )
+                                        Spacer(modifier = modifier.padding(4.dp))
+                                        Text(text = "Konfirmasi Pembayaran")
                                     }
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.CheckCircle,
-                                        contentDescription = ""
-                                    )
-                                    Spacer(modifier = modifier.padding(4.dp))
-                                    Text(text = "Konfirmasi Pembayaran")
                                 }
                             }
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(
-                                text = "Total Rp : ${
-                                    String.format(
-                                        "%,d",
-                                        viewModel.htrans.grandtotal
-                                    )
-                                }",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                modifier = modifier.weight(1F)
-                            )
-                            if (viewModel.printAble) {
-                                Button(
-                                    onClick = {
-                                        //doPrint
-                                        viewModel.printBluetooth()
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(
+                                    text = "Total Rp : ${
+                                        String.format(
+                                            "%,d",
+                                            viewModel.htrans.grandtotal
+                                        )
+                                    }",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    modifier = modifier.weight(1F)
+                                )
+                                if (viewModel.printAble) {
+                                    Button(
+                                        onClick = {
+                                            //doPrint
+                                            viewModel.printBluetooth()
+                                        }
+                                    ) {
+                                        Icon(imageVector = Icons.Default.Print, contentDescription = "")
+                                        Spacer(modifier = modifier.padding(4.dp))
+                                        Text(text = "Print")
                                     }
-                                ) {
-                                    Icon(imageVector = Icons.Default.Print, contentDescription = "")
-                                    Spacer(modifier = modifier.padding(4.dp))
-                                    Text(text = "Print")
                                 }
                             }
                         }
@@ -255,9 +283,6 @@ fun TransactionDetail(
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true)
 @Composable
