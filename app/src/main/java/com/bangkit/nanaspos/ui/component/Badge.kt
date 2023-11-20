@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.bangkit.nanaspos.ui.theme.LightGreen
+import com.bangkit.nanaspos.ui.theme.Rose
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -16,7 +18,7 @@ fun CreateBadge(
     modifier: Modifier = Modifier
 ){
     val text = if (status == 0) { "Belum Lunas" } else { "Lunas" }
-    val color = if (status == 0) { Color.Red } else { Color.Green }
+    val color = if (status == 0) { Rose } else { LightGreen }
 
     Badge(
         containerColor = color,

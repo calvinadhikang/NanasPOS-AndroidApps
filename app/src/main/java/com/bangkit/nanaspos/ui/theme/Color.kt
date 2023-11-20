@@ -4,12 +4,15 @@ import androidx.compose.ui.graphics.Color
 
 val Brown = Color(0xFF876345)
 val LightBrown = Color(0xFFC3A589)
+val SuperLightBrown = Color(0xFFFFE3C9)
 val White = Color(0xFFFEFEFE)
 val Gray = Color(0xFFF2F2F2)
-val DarkGray = Color(0xFFCECECE)
+val Slate = Color(0xFF919191)
+val DarkGray = Color(0xFF727272)
 val Black = Color(0xFF1D232E)
 
-val BGLight = Color(0xFFF0F0F0)
+val Rose = Color(0xFFDA5353)
+val LightGreen = Color(0xFF91F576)
 val BGGrayLight = Color(0xFFEBEBEB)
 val SecondaryLight = Color(0xFFFFFFFF)
 val TextDark = Color(0xFF313131)

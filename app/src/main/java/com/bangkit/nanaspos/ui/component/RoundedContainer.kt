@@ -15,12 +15,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.bangkit.nanaspos.ui.theme.Brown
+import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
 @Composable
 fun RoundedContainer(
     modifier: Modifier = Modifier,
-    color: Color = androidx.compose.material3.MaterialTheme.colorScheme.primary,
+    color: Color = LightBrown,
     content: @Composable() (ColumnScope.() -> Unit)
 ){
     Column(

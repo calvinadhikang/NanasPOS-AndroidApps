@@ -73,7 +73,11 @@ import com.bangkit.nanaspos.ui.component.InputForm
 import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.component.MenuListComponent
 import com.bangkit.nanaspos.ui.component.RoundedContainer
+import com.bangkit.nanaspos.ui.theme.Brown
+import com.bangkit.nanaspos.ui.theme.Gray
+import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.ui.theme.White
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class,
@@ -115,75 +119,74 @@ fun AddScreen(
             .fillMaxSize()
             .padding(8.dp)
     ) {
-        RoundedContainer {
-            Text(
-                text = "List Menu",
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
-                    .padding(bottom = 10.dp)
-            )
-            InputForm(text = searchKey, label = "", errorText = "", onValueChange = {searchKey = it},
-                leadingIcon = { Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = ""
-                )},
-            )
-        }
+        Text(
+            text = "List Menu",
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.Bold,
+            fontSize = 28.sp,
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
+                .padding(bottom = 10.dp)
+        )
+        InputForm(text = searchKey, label = "", errorText = "", onValueChange = {searchKey = it},
+            leadingIcon = { Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = ""
+            )},
+        )
+
         Spacer(Modifier.padding(8.dp))
-        RoundedContainer {
-            if (viewModel.loading){
-                Column(
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                ) {
-                    LoadingComponent()
+
+        if (viewModel.loading){
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                LoadingComponent()
+            }
+        }else{
+            LazyColumn(
+                contentPadding = PaddingValues(4.dp),
+                modifier = modifier
+                    .weight(1f)
+            ){
+                item {
+                    val result = menuList.filter { menu -> menu.nama.contains(searchKey, ignoreCase = true) }
+                    Text(text = "${result.count()} Menu", textAlign = TextAlign.Center,modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp))
                 }
-            }else{
-                LazyColumn(
-                    contentPadding = PaddingValues(4.dp),
-                    modifier = modifier
-                        .weight(1f)
-                ){
-                    item {
-                        val result = menuList.filter { menu -> menu.nama.contains(searchKey, ignoreCase = true) }
-                        Text(text = "${result.count()} Menu", textAlign = TextAlign.Center,modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp))
-                    }
-                    items(menuList) { menu ->
-                        if (menu.nama.contains(searchKey, ignoreCase = true)){
-                            emptyResult = false
-                            MenuListComponent(
-                                id = menu.id,
-                                nama = menu.nama,
-                                harga = menu.harga,
-                                qty = menu.qty,
-                                onAdd = {
-                                    viewModel.modifyQty(menu.id, menu.qty, menu.harga, +1)
-                                },
-                                onMinus = {
-                                    viewModel.modifyQty(menu.id, menu.qty, menu.harga, -1)
-                                },
-                                modifier = modifier
-                                    .padding(bottom = 8.dp)
-                                    .fillMaxWidth()
-                                    .animateItemPlacement()
-                            )
-                            Divider()
-                        }
+                items(menuList) { menu ->
+                    if (menu.nama.contains(searchKey, ignoreCase = true)){
+                        emptyResult = false
+                        MenuListComponent(
+                            id = menu.id,
+                            nama = menu.nama,
+                            harga = menu.harga,
+                            qty = menu.qty,
+                            onAdd = {
+                                viewModel.modifyQty(menu.id, menu.qty, menu.harga, +1)
+                            },
+                            onMinus = {
+                                viewModel.modifyQty(menu.id, menu.qty, menu.harga, -1)
+                            },
+                            modifier = modifier
+                                .padding(bottom = 8.dp)
+                                .fillMaxWidth()
+                                .animateItemPlacement()
+                        )
+                        Divider()
                     }
                 }
             }
         }
+
         Column(
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(LightBrown)
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
@@ -191,15 +194,17 @@ fun AddScreen(
                 text = "Rp ${String.format("%,d", viewModel.subTotal)}",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,
+                color = White,
             )
             Text(
                 text = "Subtotal",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Light,
+                color = Gray
             )
             Button(
                 colors = ButtonDefaults.buttonColors(
-                    MaterialTheme.colorScheme.primary
+                    Brown
                 ),
                 shape = RoundedCornerShape(8.dp),
                 elevation = ButtonDefaults.buttonElevation(3.dp),

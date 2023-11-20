@@ -26,6 +26,7 @@ import androidx.compose.material.DismissState
 import androidx.compose.material.DismissValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FractionalThreshold
+import androidx.compose.material.OutlinedButton
 import androidx.compose.material.SwipeToDismiss
 import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
@@ -59,12 +60,18 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.widget.EdgeEffectCompat
 import com.bangkit.nanaspos.UserPreference
 import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.component.RoundedContainer
 import com.bangkit.nanaspos.ui.component.TransactionHeaderListComponent
+import com.bangkit.nanaspos.ui.theme.BGGrayLight
+import com.bangkit.nanaspos.ui.theme.Gray
+import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.ui.theme.Rose
+import com.bangkit.nanaspos.ui.theme.White
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -81,9 +88,11 @@ fun Transaction(
     var deleteTransactionId by remember { mutableStateOf(-1)}
     if (showDialog){
         AlertDialog(
+            properties = DialogProperties(dismissOnClickOutside = false),
+            backgroundColor = LightBrown,
             onDismissRequest = { showDialog = false },
-            title = { Text("Yakin Ingin Hapus Transaksi?", fontSize = 20.sp, fontWeight = FontWeight.SemiBold) },
-            text = { Text("Transaksi yang sudah dihapus tidak dapat dikembalikan!") },
+            title = { Text("Yakin Ingin Hapus Transaksi?", fontSize = 20.sp, fontWeight = FontWeight.SemiBold, color = White) },
+            text = { Text("Transaksi yang sudah dihapus tidak dapat dikembalikan!", color = White) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -91,18 +100,25 @@ fun Transaction(
                         showDialog = false
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Red,
-                        contentColor = Color.White
+                        containerColor = Rose,
+                        contentColor = White
                     )
                 ) {
                     Text("Ya, Hapus".uppercase())
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) {
+                Button(
+                    onClick = { showDialog = false },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = BGGrayLight,
+                        contentColor = Color.Black
+                    )
+                ) {
                     Text("Tidak, Batalkan".uppercase())
                 }
             },
+            shape = RoundedCornerShape(16.dp)
         )
     }
 
@@ -169,9 +185,9 @@ fun Transaction(
                 text = "Rp ${String.format("%,d", viewModel.grandTotal)}",
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = White
             )
-            Text(text = "Total Pendapatan Hari Ini", color = MaterialTheme.colorScheme.onPrimary)
+            Text(text = "Total Pendapatan Hari Ini", color = Gray)
         }
     }
 }

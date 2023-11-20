@@ -52,12 +52,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.nanaspos.ui.component.CheckoutListComponent
 import com.bangkit.nanaspos.ui.component.CreateBadge
 import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 import com.bangkit.nanaspos.util.getDateTime
-import com.jakewharton.threetenabp.AndroidThreeTen
 import java.util.Date
 
 
@@ -67,7 +67,7 @@ import java.util.Date
 fun TransactionDetail(
     key: Int,
     navigateBack: () -> Unit,
-    viewModel: TransactionDetailViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    viewModel: TransactionDetailViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
