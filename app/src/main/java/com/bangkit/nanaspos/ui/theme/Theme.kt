@@ -31,17 +31,18 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Accent,
-    onPrimary = TextDark,
+    primary = Brown,
+    onPrimary = White,
+    onPrimaryContainer = White,
 
-    background = BGLight,
-    onBackground = TextDark,
+    background = White,
+    onBackground = Black,
 
-    surface = BGLight,
-    onSurface = Accent,
+    tertiary = Gray,
+    onTertiary = Black,
 
-    secondary = SecondaryLight,
-    onSecondary = TextDark,
+    secondary = LightBrown,
+    onSecondary = Black,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

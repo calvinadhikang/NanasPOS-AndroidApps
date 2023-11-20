@@ -62,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.widget.EdgeEffectCompat
 import com.bangkit.nanaspos.UserPreference
 import com.bangkit.nanaspos.ui.component.LoadingComponent
+import com.bangkit.nanaspos.ui.component.RoundedContainer
 import com.bangkit.nanaspos.ui.component.TransactionHeaderListComponent
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
@@ -163,19 +164,14 @@ fun Transaction(
             }
 
         }
-        Column(
-            modifier = modifier
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
+        RoundedContainer {
             Text(
                 text = "Rp ${String.format("%,d", viewModel.grandTotal)}",
                 fontSize = 26.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimary
             )
-            Text(text = "Total Pendapatan Hari Ini")
+            Text(text = "Total Pendapatan Hari Ini", color = MaterialTheme.colorScheme.onPrimary)
         }
     }
 }

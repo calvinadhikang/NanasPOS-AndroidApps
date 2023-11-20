@@ -1,21 +1,26 @@
 package com.bangkit.nanaspos.ui.transaction_detail
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.bangkit.nanaspos.api.ApiConfig
 import com.bangkit.nanaspos.api.FinishTransactionResponse
 import com.bangkit.nanaspos.api.GetTransactionDetailResponse
 import com.bangkit.nanaspos.api.MenuItemResponse
 import com.bangkit.nanaspos.api.TransactionItemResponse
+import com.bangkit.nanaspos.util.getDateTime
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +48,7 @@ class TransactionDetailViewModel: ViewModel() {
             tax = -1,
             tax_value = -1,
             total = -1,
+            createdAt = ""
         )
     )
 
@@ -108,39 +114,41 @@ class TransactionDetailViewModel: ViewModel() {
         })
     }
 
-    fun printBluetooth(){
-        var nama = if (htrans.divisi == 1) { "BabikuGenyol" } else { "BaliLais" }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun printBluetooth(context: Context){
+        viewModelScope.launch {
+            var nama = if (htrans.divisi == 1) { "BabikuGenyol" } else { "BaliLais" }
 
-        var details = ""
-        detailList.value.forEachIndexed { index, menuItemResponse ->
-            details += "[L]<b>${menuItemResponse.nama}</b>[R]Rp. ${String.format("%,d", menuItemResponse.subtotal)}\n"
-            details += "[L]${menuItemResponse.qty} x Rp. ${String.format("%,d", menuItemResponse.harga)}\n"
+            var details = ""
+            detailList.value.forEachIndexed { index, menuItemResponse ->
+                details += "[L]<b>${menuItemResponse.nama}</b>\n"
+                details += "[L]${menuItemResponse.qty} x Rp.${String.format("%,d", menuItemResponse.harga)} [R]Rp.${String.format("%,d", menuItemResponse.subtotal)}\n"
+            }
+
+            var discount = ""
+            if (htrans.diskon > 0){
+                discount = "[R]TOTAL DISC  :[R]Rp.${String.format("%,d", htrans.diskon)}\n" + "[R]GRAND TOTAL :[R]Rp.${String.format("%,d", htrans.grandtotal)}\n"
+            }
+
+            var tax = ""
+            if (htrans.tax > 0){
+                tax = "[L]Tax ${htrans.tax}% : [R]Rp.${String.format("%,d", htrans.tax_value)}\n"
+            }
+
+            val printer = EscPosPrinter(BluetoothPrintersConnections.selectFirstPaired(), 203, 48f, 32)
+            printer
+                .printFormattedText(
+                "[C]<u><font size='big'>$nama</font></u>\n" +
+                    "[C]WA: 081-217-393-280\n" +
+                    "[L]<b>Customer :${htrans.customer}</b>\n" +
+                    "[L]Tanggal [R]${getDateTime(htrans.createdAt!!)}\n" +
+                    "[C]================================\n" +
+                    "${details}\n" +
+                    "[C]--------------------------------\n" +
+                    "[L]TOTAL HARGA :[R]Rp.${String.format("%,d", htrans.total)}\n" +
+                    "${tax}" +
+                    "[L]GRAND TOTAL :[R]Rp.${String.format("%,d", htrans.grandtotal)}"
+                )
         }
-
-        var discount = ""
-        if (htrans.diskon > 0){
-            discount = "[R]TOTAL DISC  :[R]Rp. ${String.format("%,d", htrans.diskon)}\n" + "[R]GRAND TOTAL :[R]Rp. ${String.format("%,d", htrans.grandtotal)}\n"
-        }
-
-        var tax = ""
-        if (htrans.tax > 0){
-            tax = "[L]Tax ${htrans.tax}% : [R]Rp. ${String.format("%,d", htrans.tax_value)}\n"
-        }
-
-        val printer = EscPosPrinter(BluetoothPrintersConnections.selectFirstPaired(), 203, 48f, 32)
-        printer
-            .printFormattedText(
-            "[C]<u><font size='big'>$nama</font></u>\n" +
-                "[C]WA: 081-217-393-280\n" +
-                "[L]<b>Customer :${htrans.customer}</b>\n" +
-                "[L]\n" +
-                "[C]================================\n" +
-                "[L]\n" +
-                "${details}\n" +
-                "[C]--------------------------------\n" +
-                "[L]TOTAL HARGA :[R]Rp. ${String.format("%,d", htrans.total)}\n" +
-                "${tax}" +
-                "[L]GRAND TOTAL :[R] Rp. ${String.format("%,d", htrans.grandtotal)}"
-            )
     }
 }

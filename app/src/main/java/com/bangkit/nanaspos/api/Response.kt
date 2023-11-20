@@ -66,6 +66,9 @@ data class TransactionItemResponse(
     @field:SerializedName("status")
     val status: Int,
 
+    @field:SerializedName("created_at")
+    val createdAt: String?,
+
     @field:SerializedName("dtrans")
     val dtrans: List<MenuItemResponse?>?,
 )

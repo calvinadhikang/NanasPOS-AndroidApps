@@ -191,7 +191,6 @@ fun CheckoutScreen(
                     focusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
                     focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
                     focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
-                    textColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 singleLine = true,
                 value = viewModel.customer,

@@ -1,5 +1,7 @@
 package com.bangkit.nanaspos.ui.transaction_detail
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -54,8 +56,12 @@ import com.bangkit.nanaspos.ui.component.CheckoutListComponent
 import com.bangkit.nanaspos.ui.component.CreateBadge
 import com.bangkit.nanaspos.ui.component.LoadingComponent
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.util.getDateTime
+import com.jakewharton.threetenabp.AndroidThreeTen
+import java.util.Date
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionDetail(
@@ -132,6 +138,11 @@ fun TransactionDetail(
                             .padding(16.dp)
                             .fillMaxWidth()
                     ) {
+                        Row(){
+
+                            Text(text="Tanggal Pesanan", modifier = Modifier.weight(1F))
+                            Text(text="${getDateTime(viewModel.htrans.createdAt!!)}")
+                        }
                         Row(){
                             Text(text="Status Pesanan", modifier = Modifier.weight(1F))
                             CreateBadge(status = viewModel.htrans.status,)
@@ -267,7 +278,7 @@ fun TransactionDetail(
                                     Button(
                                         onClick = {
                                             //doPrint
-                                            viewModel.printBluetooth()
+                                            viewModel.printBluetooth(context)
                                         }
                                     ) {
                                         Icon(imageVector = Icons.Default.Print, contentDescription = "")
@@ -284,6 +295,7 @@ fun TransactionDetail(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun TransactionDetailPreview() {
