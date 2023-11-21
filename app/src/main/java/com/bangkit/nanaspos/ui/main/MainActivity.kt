@@ -80,9 +80,7 @@ import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 import com.bangkit.nanaspos.ui.theme.White
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class,
-    ExperimentalMaterial3Api::class
-)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddScreen(
     viewModel: MainViewModel = viewModel(factory = ViewModelFactory(ApiConfig.getApiService(), LocalContext.current)),
@@ -91,28 +89,11 @@ fun AddScreen(
     val menuList by viewModel.menuList.collectAsState()
     var searchKey by rememberSaveable { mutableStateOf("") }
     var emptyResult by rememberSaveable { mutableStateOf(true) }
-    var sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden)
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by rememberSaveable() { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit){
         viewModel.getMenu()
     }
 
-    if(showBottomSheet){
-        ModalBottomSheet(onDismissRequest = { showBottomSheet = false }) {
-            Button(onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = false
-                    }
-                }
-            }) {
-                Text("Hide bottom sheet")
-            }
-            Spacer(modifier = Modifier.padding(10.dp))
-        }
-    }
 
     Column(
         modifier = modifier
