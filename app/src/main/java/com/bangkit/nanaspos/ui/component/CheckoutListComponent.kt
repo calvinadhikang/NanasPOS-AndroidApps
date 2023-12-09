@@ -28,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.ui.theme.SuperLightBrown
 
 @Composable
 fun CheckoutListComponent(
@@ -41,7 +42,7 @@ fun CheckoutListComponent(
     Card(
         modifier = Modifier.padding(vertical = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondary
+            containerColor = SuperLightBrown
         )
     ) {
         Row(

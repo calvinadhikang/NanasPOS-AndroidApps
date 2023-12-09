@@ -10,11 +10,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.Placeholder
 import com.bangkit.nanaspos.ui.theme.BGGrayLight
+import com.bangkit.nanaspos.ui.theme.Gray
+import com.bangkit.nanaspos.ui.theme.Slate
 
 @Composable
 fun InputForm(
@@ -22,6 +26,7 @@ fun InputForm(
     text: String,
     label: String,
     errorText: String,
+    placeholder: String = "",
     onValueChange: (it: String) -> Unit,
     leadingIcon: @Composable () -> Unit?
 ) {
@@ -32,10 +37,11 @@ fun InputForm(
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.Black,
-            backgroundColor = BGGrayLight,
+            backgroundColor = Gray,
             focusedBorderColor = Color.Transparent,
             unfocusedBorderColor = Color.Transparent,
         ),
+        placeholder = { Text(text = placeholder, color = Slate) },
         modifier = modifier.fillMaxWidth()
 
     )

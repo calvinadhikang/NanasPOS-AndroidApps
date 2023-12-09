@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.bangkit.nanaspos.ui.theme.Brown
 
 @Composable
 fun LoadingComponent(
@@ -17,7 +18,7 @@ fun LoadingComponent(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        CircularProgressIndicator(modifier.padding(end = 5.dp))
+        CircularProgressIndicator(modifier.padding(end = 5.dp), color = Brown)
         Text(text = "Loading...")
     }
 }

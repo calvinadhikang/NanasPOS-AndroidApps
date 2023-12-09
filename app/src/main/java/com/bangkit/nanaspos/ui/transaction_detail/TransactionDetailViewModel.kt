@@ -6,16 +6,21 @@ import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bangkit.nanaspos.UserPreference
 import com.bangkit.nanaspos.api.ApiConfig
+import com.bangkit.nanaspos.api.ApiService
 import com.bangkit.nanaspos.api.FinishTransactionResponse
 import com.bangkit.nanaspos.api.GetTransactionDetailResponse
 import com.bangkit.nanaspos.api.MenuItemResponse
 import com.bangkit.nanaspos.api.TransactionItemResponse
+import com.bangkit.nanaspos.model.Menu
+import com.bangkit.nanaspos.repository.MenuRepository
 import com.bangkit.nanaspos.util.getDateTime
 import com.dantsu.escposprinter.EscPosPrinter
 import com.dantsu.escposprinter.connection.bluetooth.BluetoothPrintersConnections
@@ -26,8 +31,10 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class TransactionDetailViewModel: ViewModel() {
-
+class TransactionDetailViewModel(
+    val service: ApiService,
+    val context: Context,
+): ViewModel() {
     var isEdit = MutableStateFlow(false)
     var printAble by mutableStateOf(false)
     var loading by mutableStateOf(false)
@@ -150,5 +157,71 @@ class TransactionDetailViewModel: ViewModel() {
                     "[L]GRAND TOTAL :[R]Rp.${String.format("%,d", htrans.grandtotal)}"
                 )
         }
+    }
+
+
+    //
+    var menuList: MutableStateFlow<List<Menu>> = MutableStateFlow(mutableStateListOf())
+    private val pref = UserPreference(context).getUser()
+
+    var loadingMenu by mutableStateOf(true)
+    var subTotal by mutableIntStateOf(0)
+
+    fun getMenu(){
+        viewModelScope.launch{
+            loadingMenu = true
+
+            val menuRepository = MenuRepository(service)
+            val response = menuRepository.getAllMenus(pref.divisi)
+            if (response.isSuccessful){
+                val result = response.body()!!
+
+                val list = mutableStateListOf<Menu>()
+                result.data.forEachIndexed { index, menuItemResponse ->
+                    list.add(
+                        Menu(
+                        id = menuItemResponse.id!!,
+                        qty = menuItemResponse.qty!!,
+                        subTotal = menuItemResponse.subtotal!!,
+                        harga = menuItemResponse.harga!!,
+                        nama = menuItemResponse.nama!!
+                    )
+                    )
+                }
+
+                menuList.value = list
+                countSubtotal()
+            }
+            loadingMenu = false
+        }
+    }
+
+    fun modifyQty(itemId: Int, oldQty: Int, oldHarga: Int, modifyValue: Int){
+        val updatedItems = menuList.value.toMutableList()
+        val newQty = oldQty + modifyValue
+
+        //checkQty
+        if (newQty < 0){
+            Toast.makeText(context, "Qty minimal 0", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val newSubtotal = newQty * oldHarga
+        val itemIndex = updatedItems.indexOfFirst { it.id == itemId }
+        if (itemIndex != -1) {
+            val updatedItem = updatedItems[itemIndex].copy(qty = newQty, subTotal = newSubtotal)
+            updatedItems[itemIndex] = updatedItem
+            menuList.value = updatedItems
+        }
+
+        countSubtotal()
+    }
+
+    private fun countSubtotal(){
+        var subtotal = 0
+        menuList.value.forEachIndexed { index, menu ->
+            subtotal += menu.subTotal
+        }
+        this.subTotal = subtotal
     }
 }

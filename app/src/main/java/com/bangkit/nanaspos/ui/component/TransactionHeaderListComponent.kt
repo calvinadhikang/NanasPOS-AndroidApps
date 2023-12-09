@@ -14,22 +14,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.ui.theme.Slate
+import com.bangkit.nanaspos.ui.theme.SuperLightBrown
 
 @Composable
 fun TransactionHeaderListComponent(
@@ -43,7 +41,7 @@ fun TransactionHeaderListComponent(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            MaterialTheme.colorScheme.secondary
+            SuperLightBrown
         ),
         elevation = CardDefaults.cardElevation(4.dp),
         modifier = modifier
@@ -51,7 +49,7 @@ fun TransactionHeaderListComponent(
             .clickable {
                 onClick(id)
             }
-            .padding(bottom = 15.dp)
+            .padding(bottom = 8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -67,7 +65,7 @@ fun TransactionHeaderListComponent(
                     Text(text = customer, style = MaterialTheme.typography.bodyMedium)
                     CreateBadge(status = status)
                 }
-                Text(text = "Rp ${String.format("%,d", grandtotal)}")
+                Text(text = "Rp ${String.format("%,d", grandtotal)}", color = Slate)
             }
             IconButton(onClick = {
                 onDeleteClick()

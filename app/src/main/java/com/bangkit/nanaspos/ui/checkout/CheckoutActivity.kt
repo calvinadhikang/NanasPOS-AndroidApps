@@ -42,6 +42,7 @@ import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.MoneyOffCsred
 import androidx.compose.material.icons.filled.Payment
 import androidx.compose.material.icons.filled.Payments
+import androidx.compose.material.icons.filled.PersonPin
 import androidx.compose.material.icons.filled.PointOfSale
 import androidx.compose.material.icons.filled.PriceChange
 import androidx.compose.material.icons.filled.PriceCheck
@@ -80,7 +81,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.bangkit.nanaspos.ui.component.CheckoutListComponent
+import com.bangkit.nanaspos.ui.component.InputForm
 import com.bangkit.nanaspos.ui.component.LoadingComponent
+import com.bangkit.nanaspos.ui.theme.Brown
+import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
 
 class CheckoutActivity() : ComponentActivity() {
@@ -108,7 +112,6 @@ fun CheckoutScreen(
 ) {
     val context = LocalContext.current
     val menuList by viewModel.menuList.collectAsState()
-    var isEdit by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(key1 = Unit){
         viewModel.getCheckoutList()
@@ -159,10 +162,8 @@ fun CheckoutScreen(
                 harga = menu.harga,
                 qty = menu.qty,
                 subTotal = menu.subTotal,
-                isEdit = isEdit
             )
         }
-        EditButton(isEdit = isEdit, onClick = { isEdit = !isEdit })
 
         Spacer(modifier = modifier.padding(20.dp))
         Text(
@@ -173,39 +174,24 @@ fun CheckoutScreen(
         Column(
             modifier = modifier
                 .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(LightBrown)
                 .padding(16.dp)
                 .fillMaxWidth()
         ) {
-            OutlinedTextField(
-                label = {
-                    Text(text = "Nama Customer", style = MaterialTheme.typography.bodySmall)
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "")
-                },
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-                    unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
-                    unfocusedSupportingTextColor = MaterialTheme.colorScheme.onSecondary,
-                    focusedLeadingIconColor = MaterialTheme.colorScheme.onSecondary,
-                    focusedBorderColor = MaterialTheme.colorScheme.onSecondary,
-                    focusedLabelColor = MaterialTheme.colorScheme.onSecondary,
-                ),
-                singleLine = true,
-                value = viewModel.customer,
-                onValueChange = { viewModel.customer = it },
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp, top = 4.dp)
+            InputForm(
+                placeholder = "Nama Customer",
+                text = viewModel.customer,
+                label = "Nama Customer",
+                errorText = "",
+                onValueChange = {viewModel.customer = it},
+                leadingIcon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "") }
             )
         }
 
         DetailBiayaComponent(viewModel = viewModel)
-        
         Button(
             colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.primary
+                Brown
             ),
             shape = RoundedCornerShape(8.dp),
             elevation = ButtonDefaults.buttonElevation(3.dp),
@@ -264,7 +250,7 @@ fun DetailBiayaComponent(
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.secondary)
+            .background(LightBrown)
             .padding(16.dp)
             .fillMaxWidth()
     ) {

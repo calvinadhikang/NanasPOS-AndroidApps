@@ -52,6 +52,9 @@ import com.bangkit.nanaspos.ui.transaction.Transaction
 import com.bangkit.nanaspos.ui.transaction_detail.TransactionDetail
 import com.bangkit.nanaspos.ui.navigation.NavigationItem
 import com.bangkit.nanaspos.ui.navigation.Screen
+import com.bangkit.nanaspos.ui.theme.Brown
+import com.bangkit.nanaspos.ui.theme.LightBrown
+import com.bangkit.nanaspos.ui.theme.White
 
 
 class HomeActivity : ComponentActivity() {
@@ -161,6 +164,9 @@ fun BottomBar(
     val currentRoute = navBackStackEntry?.destination?.route
 
     NavigationBar(
+        containerColor = Brown,
+        contentColor = White,
+        tonalElevation = 16.dp,
         modifier = modifier
     ) {
         val navigationItems = listOf(
