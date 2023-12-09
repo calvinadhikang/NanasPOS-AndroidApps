@@ -13,7 +13,7 @@ import java.util.Date
 fun getDateTime(s: String): String? {
     try {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
-            // Replace this timestamp string with your actual timestamp
+            // Replace this timestamp string with your actual timestamp...
             val timestampString = s
 
             // Define the input date-time format pattern
