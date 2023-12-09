@@ -12,23 +12,27 @@ import java.util.Date
 @RequiresApi(Build.VERSION_CODES.O)
 fun getDateTime(s: String): String? {
     try {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O){
+            // Replace this timestamp string with your actual timestamp
+            val timestampString = s
 
-        // Replace this timestamp string with your actual timestamp
-        val timestampString = s
+            // Define the input date-time format pattern
+            val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
 
-        // Define the input date-time format pattern
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")
+            // Parse the timestamp string into a LocalDateTime object
+            val localDateTime = LocalDateTime.parse(timestampString, inputFormatter)
 
-        // Parse the timestamp string into a LocalDateTime object
-        val localDateTime = LocalDateTime.parse(timestampString, inputFormatter)
+            // Define the desired output format pattern
+            val outputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
 
-        // Define the desired output format pattern
-        val outputFormatter = DateTimeFormatter.ofPattern("dd MMM yyyy")
+            // Format the LocalDateTime using the output formatter
+            val formattedDateTime = localDateTime.format(outputFormatter)
 
-        // Format the LocalDateTime using the output formatter
-        val formattedDateTime = localDateTime.format(outputFormatter)
-
-        return formattedDateTime
+            return formattedDateTime
+        }
+        else{
+            return ""
+        }
     } catch (e: Exception) {
         return e.toString()
     }
