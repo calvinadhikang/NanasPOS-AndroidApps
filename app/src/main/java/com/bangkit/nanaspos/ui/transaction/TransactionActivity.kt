@@ -57,6 +57,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -153,6 +154,13 @@ fun Transaction(
                 LoadingComponent()
             }
         }else{
+            if (menuList.isEmpty()) {
+                Text(
+                    text = "Tidak ada transaksi hari ini",
+                    modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
+                    textAlign = TextAlign.Center
+                )
+            }
             LazyColumn(
                 contentPadding = PaddingValues(4.dp),
                 modifier = modifier

@@ -7,27 +7,33 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -53,7 +59,6 @@ import com.bangkit.nanaspos.ui.transaction_detail.TransactionDetail
 import com.bangkit.nanaspos.ui.navigation.NavigationItem
 import com.bangkit.nanaspos.ui.navigation.Screen
 import com.bangkit.nanaspos.ui.theme.Brown
-import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.White
 
 
@@ -221,12 +226,24 @@ fun ProfileScreen(
     val pref = UserPreference(context).getUser()
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(16.dp)
+        modifier = modifier
+            .padding(16.dp)
+            .fillMaxHeight(),
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = "Nama : ${pref.nama}", fontSize = 32.sp, fontWeight = FontWeight.Bold)
-        Text(text = "Divisi : ${pref.divisi}", fontSize = 28.sp, fontWeight = FontWeight.Bold)
+        Column {
+            Text(text = "Nama User", fontSize = 12.sp, color = Color.Gray)
+            Text(text = pref.nama, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.padding(10.dp))
+            Text(text = "Divisi", fontSize = 12.sp, color = Color.Gray)
+            Text(text = "Divisi : ${pref.divisi}", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+        }
         Button(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Red,
+            ),
             onClick = {
                 UserPreference(context).clearUser()
                 val activity = context as Activity

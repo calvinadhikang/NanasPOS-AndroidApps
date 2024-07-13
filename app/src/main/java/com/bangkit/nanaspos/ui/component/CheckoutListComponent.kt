@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,16 +41,19 @@ fun CheckoutListComponent(
     modifier: Modifier = Modifier,
 ) {
     Card(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(vertical = 4.dp),
         colors = CardDefaults.cardColors(
             containerColor = SuperLightBrown
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 8.dp,
         )
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(horizontal = 18.dp, vertical = 12.dp)
         ){
             Column(
                 modifier = modifier.weight(1F)
