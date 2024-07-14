@@ -30,15 +30,15 @@ fun InputForm(
     onValueChange: (it: String) -> Unit,
     leadingIcon: @Composable () -> Unit?
 ) {
-    TextField(
+    OutlinedTextField(
         value = text,
         onValueChange = {onValueChange(it)},
         leadingIcon = { leadingIcon() },
         shape = RoundedCornerShape(16.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = Color.Black,
-            backgroundColor = Gray,
-            focusedBorderColor = Color.Transparent,
+            backgroundColor = Color.White,
+            focusedBorderColor = Color.LightGray,
             unfocusedBorderColor = Color.Transparent,
         ),
         placeholder = { Text(text = placeholder, color = Slate) },

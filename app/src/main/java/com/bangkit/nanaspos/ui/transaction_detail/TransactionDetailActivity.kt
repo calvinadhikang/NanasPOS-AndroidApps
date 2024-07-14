@@ -43,6 +43,7 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -76,6 +77,8 @@ import com.bangkit.nanaspos.ui.component.MenuListComponent
 import com.bangkit.nanaspos.ui.theme.Brown
 import com.bangkit.nanaspos.ui.theme.LightBrown
 import com.bangkit.nanaspos.ui.theme.NanasPOSTheme
+import com.bangkit.nanaspos.ui.theme.SuperLightBrown
+import com.bangkit.nanaspos.ui.theme.White
 import com.bangkit.nanaspos.util.getDateTime
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -233,8 +236,7 @@ fun TransactionDetail(
         } else {
             LazyColumn(
                 contentPadding = PaddingValues(4.dp, bottom = 40.dp),
-                modifier = modifier
-                    .padding(bottom = 4.dp)
+                modifier = modifier.padding(bottom = 4.dp)
             ) {
                 item {
                     Text(
@@ -245,7 +247,7 @@ fun TransactionDetail(
                     Column(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(MaterialTheme.colorScheme.secondary)
+                            .background(SuperLightBrown)
                             .padding(16.dp)
                             .fillMaxWidth()
                     ) {
@@ -330,14 +332,16 @@ fun TransactionDetail(
                             modifier = modifier
                                 .clip(RoundedCornerShape(8.dp))
                                 .shadow(4.dp)
-                                .background(Color.LightGray)
+                                .background(SuperLightBrown)
                                 .padding(8.dp)
                                 .fillMaxWidth()
                         ) {
                             //Hitung Kembalian
-                            Text(text = "Hitung Kembalian")
+                            Text(text = "Hitung Kembalian", modifier = Modifier.padding(bottom = 8.dp))
                             Row(
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 TextField(
                                     value = viewModel.uang.toString(),
@@ -350,17 +354,36 @@ fun TransactionDetail(
                                         viewModel.countKembalian()
                                     },
                                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = TextFieldDefaults.colors(
+                                        unfocusedContainerColor = White,
+                                        focusedContainerColor = White,
+                                    ),
                                     modifier = modifier
                                         .weight(0.5F)
-                                        .padding(end = 4.dp)
+                                        .padding(end = 4.dp),
                                 )
-                                Text(
-                                    text = "Kembali Rp : ${String.format("%,d", viewModel.kembalian)}",
-                                    fontSize = 20.sp,
-                                    modifier = modifier.weight(1F)
-                                )
+                                Column(
+                                    modifier = modifier
+                                        .weight(1F)
+                                        .padding(start = 16.dp),
+                                ){
+                                    Text(text = "Kembali", fontSize = 12.sp)
+                                    Text(
+                                        text = "Rp ${String.format("%,d", viewModel.kembalian)}",
+                                        fontSize = 20.sp,
+                                    )
+                                }
                             }
                             Spacer(modifier = modifier.padding(8.dp))
+                            Column {
+                                Text(text = "Total")
+                                Text(
+                                    text = "Rp ${String.format("%,d", viewModel.htrans.grandtotal)}",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                             Row(
                                 modifier = modifier.padding(top = 8.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -385,32 +408,18 @@ fun TransactionDetail(
                                     }
                                 }
                             }
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = "Total Rp : ${
-                                        String.format(
-                                            "%,d",
-                                            viewModel.htrans.grandtotal
-                                        )
-                                    }",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    modifier = modifier.weight(1F)
-                                )
-                                if (viewModel.printAble) {
-                                    Button(
-                                        onClick = {
-                                            //doPrint
-                                            viewModel.printBluetooth(context)
-                                        }
-                                    ) {
-                                        Icon(imageVector = Icons.Default.Print, contentDescription = "")
-                                        Spacer(modifier = modifier.padding(4.dp))
-                                        Text(text = "Print")
-                                    }
+                        }
+                        if (viewModel.printAble) {
+                            Button(
+                                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                onClick = {
+                                    viewModel.printBluetooth(context)
                                 }
+                            ) {
+                                Icon(imageVector = Icons.Default.Print, contentDescription = "")
+                                Spacer(modifier = modifier.padding(4.dp))
+                                Text(text = "Print")
                             }
                         }
                     }
